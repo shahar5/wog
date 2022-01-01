@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  wog-flask:
+    build: .
+    container_name: wog
+    ports:
+      - "8777:5000"
+    volumes:
+      - .:/app
+    image: ricksanchezz/wog-flask-stage
