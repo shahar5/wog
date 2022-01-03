@@ -1,3 +1,4 @@
+properties([buildDiscarder(logRotator(numToKeepStr: '3'))])
 node {
     stage("Checkout SCM"){
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/shahar5/wog']]])
@@ -12,9 +13,11 @@ node {
         image.run('--name staged -p 8777:5000')
     }
     stage("selenium"){
-        def result = bat (script: "python e2e.py", returnStdout: true).trim()
-        echo "${result}"
-        if (result != 0){
+        stdout = bat(script: "python e2e.py", returnStdout: true).trim()
+        result = stdout.readLines().drop(1).join(" ")
+        if (result != "0"){
+            bat "docker stop staged"
+            bat "docker rm staged"
             error("Selenium test had failed")
         }
     }
