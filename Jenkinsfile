@@ -12,7 +12,7 @@ node {
         image.run('--name staged -p 8777:5000')
     }
     stage("selenium"){
-        result = bat (script: "python e2e.py", returnStdout: true).trim()
+        def result = bat (script: "python e2e.py", returnStdout: true).trim()
         echo "${result}"
         if (result != 0){
             error("Selenium test had failed")
