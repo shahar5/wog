@@ -15,17 +15,18 @@ node {
         result = bat (script: "python e2e.py", returnStdout: true).trim()
     }
     stage("Finalize"){
-    if (result == 0){
-        withCredentials([usernameColonPassword(credentialsId: 'docker-hub', variable: 'docker-hub')]) {
-        docker.withRegistry("https://registry.hub.docker.com", "docker-hub") {
-            bat "docker image tag ricksanchezz/wog-flask-stage:latest ricksanchezz/wog-flask-prod:${currentBuild.number}"
-            bat "docker push ricksanchezz/wog-flask-prod:${currentBuild.number}"
-            bat "docker stop staged"
-            bat "docker rm staged"
+        if (result == 0){
+            withCredentials([usernameColonPassword(credentialsId: 'docker-hub', variable: 'docker-hub')]) {
+            docker.withRegistry("https://registry.hub.docker.com", "docker-hub") {
+                bat "docker image tag ricksanchezz/wog-flask-stage:latest ricksanchezz/wog-flask-prod:${currentBuild.number}"
+                bat "docker push ricksanchezz/wog-flask-prod:${currentBuild.number}"
+                bat "docker stop staged"
+                bat "docker rm staged"
+                }
             }
         }
-    }
-    else{
-        error("Selenium test failed")
+        else{
+            error("Selenium test failed")
+        }
     }
 }
