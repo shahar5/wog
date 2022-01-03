@@ -12,13 +12,10 @@ node {
         image.run('--name staged -p 8777:5000')
     }
     stage("selenium"){
-        try{
-            bat (script: "python e2e.py", returnStdout: true).trim()
-    } catch (Exception e) {
-            echo 'Exception occurred: ' + e.toString()
-        }
+        result = bat (script: "python e2e.py", returnStdout: true).trim()
     }
     stage("Finalize"){
+    if (result == 0){
         withCredentials([usernameColonPassword(credentialsId: 'docker-hub', variable: 'docker-hub')]) {
         docker.withRegistry("https://registry.hub.docker.com", "docker-hub") {
             bat "docker image tag ricksanchezz/wog-flask-stage:latest ricksanchezz/wog-flask-prod:${currentBuild.number}"
@@ -27,5 +24,8 @@ node {
             bat "docker rm staged"
             }
         }
+    }
+    else{
+        error("Selenium test failed")
     }
 }
