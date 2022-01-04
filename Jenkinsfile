@@ -13,7 +13,7 @@ node {
         image.run('--name staged -p 8777:5000')
     }
     stage("selenium"){
-        stdout = bat(script: "python e2e.py", returnStdout: true).trim()
+        stdout = bat(script: "python ./tests/e2e.py", returnStdout: true).trim()
         result = stdout.readLines().drop(1).join(" ")
         if (result != "0"){
             bat "docker stop staged"
