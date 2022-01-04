@@ -24,8 +24,8 @@ node {
     stage("Finalize"){
         withCredentials([usernameColonPassword(credentialsId: 'docker-hub', variable: 'docker-hub')]) {
         docker.withRegistry("https://registry.hub.docker.com", "docker-hub") {
-            bat "docker image tag ricksanchezz/wog-flask-stage:latest ricksanchezz/wog-flask-prod:${currentBuild.number}"
-            bat "docker push ricksanchezz/wog-flask-prod:${currentBuild.number}"
+            bat "docker image tag ricksanchezz/wog-flask-stage:latest ricksanchezz/wog-flask-prod:latest"
+            bat "docker push ricksanchezz/wog-flask-prod:latest"
             bat "docker stop staged"
             bat "docker rm staged"
             }

@@ -1,1 +1,1 @@
-docker run -d -p 8777:5000 wog
+docker run -d -p 8777:5000 ricksanchezz/wog-flask-prod:latest
